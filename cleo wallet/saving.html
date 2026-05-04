@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cleo Saving</title>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="wallet.css">
+</head>
+
+<body>
+
+<div class="phone">
+<div class="notch"></div>
+
+<div class="screen">
+
+  <div class="topbar">
+    <div class="circleIcon" onclick="window.location.href='wallet.html'">←</div>
+    <div class="brand">SAVING</div>
+    <div class="circleIcon">◎</div>
+  </div>
+
+  <div class="subtitle">Smart Savings Vaults</div>
+  <div class="username">Build Your Goals</div>
+
+  <div id="savingArea" style="margin-top:24px;"></div>
+
+</div>
+
+<div class="footerNav">
+  <div class="navItem" onclick="window.location.href='wallet.html'">⌂<br>Home</div>
+  <div class="navItem" onclick="window.location.href='cards.html'">▣<br>Cards</div>
+  <div class="navItem" onclick="window.location.href='exchange.html'">⇄<br>Exchange</div>
+  <div class="navItem" onclick="window.location.href='invest.html'">◌<br>Invest</div>
+  <div class="navItem">◎<br>Saving</div>
+</div>
+
+<div id="msg"></div>
+</div>
+
+<script src="saving.js"></script>
+</body>
+</html>

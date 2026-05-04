@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cleo Wallet</title>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="wallet.css">
+</head>
+
+<body>
+
+<div class="phone">
+<div class="notch"></div>
+
+<div class="screen">
+
+  <div class="topbar">
+    <div class="circleIcon" onclick="goProfile()">👤</div>
+    <div class="brand">CLEO</div>
+    <div class="circleIcon" onclick="goNotif()">🔔</div>
+  </div>
+
+  <div class="subtitle">Welcome back,</div>
+  <div class="username" id="welcomeName">Client</div>
+
+  <div class="mainCard">
+    <div class="mainMini">CLEO GLOBAL ACCOUNT</div>
+    <div class="balance" id="bal">$0.00</div>
+    <div class="ref" id="topRef">LIV-----</div>
+  </div>
+
+  <div class="actions">
+    <div class="cardbtn" onclick="goExchange()">
+      <div class="icon">＋</div>
+      Add
+    </div>
+
+    <div class="cardbtn" onclick="goExchange()">
+      <div class="icon">⇄</div>
+      Exchange
+    </div>
+  </div>
+
+  <div class="activity">
+    <h3>Recent Activity</h3>
+    <div id="history"></div>
+  </div>
+
+</div>
+
+<div class="footerNav">
+  <div class="navItem">⌂<br>Home</div>
+  <div class="navItem" onclick="goCards()">▣<br>Cards</div>
+  <div class="navItem" onclick="goExchange()">⇄<br>Exchange</div>
+  <div class="navItem" onclick="goInvest()">◌<br>Invest</div>
+  <div class="navItem" onclick="goSaving()">◎<br>Saving</div>
+</div>
+
+<div id="msg"></div>
+</div>
+
+<script src="wallet.js"></script>
+</body>
+</html>
