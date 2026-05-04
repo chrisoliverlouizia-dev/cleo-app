@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cleo Internal Banking Console</title>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <style>
+    *{box-sizing:border-box;font-family:Arial,sans-serif;}
+
+    body{
+      margin:0;
+      background:#020617;
+      color:white;
+      display:flex;
+      justify-content:center;
+      min-height:100vh;
+    }
+
+    .panel{
+      width:100%;
+      max-width:700px;
+      padding:25px;
+    }
+
+    h2{
+      text-align:center;
+      margin-bottom:20px;
+      color:#38bdf8;
+    }
+
+    button,input,select{
+      width:100%;
+      padding:12px;
+      margin-bottom:10px;
+      border:none;
+      border-radius:10px;
+    }
+
+    button{
+      cursor:pointer;
+      font-weight:bold;
+      color:white;
+    }
+
+    .blue{background:#2563eb;}
+    .green{background:#16a34a;}
+    .red{background:#dc2626;}
+    .gray{background:#334155;}
+
+    #userslist{
+      background:#0f172a;
+      border-radius:12px;
+      padding:12px;
+      margin-bottom:20px;
+      max-height:220px;
+      overflow:auto;
+    }
+
+    .userrow{
+      padding:10px;
+      border-bottom:1px solid #1e293b;
+      cursor:pointer;
+      transition:0.3s;
+      border-radius:8px;
+    }
+
+    .userrow:hover{
+      background:#1e293b;
+    }
+
+    .clientbox{
+      background:#0f172a;
+      padding:15px;
+      border-radius:12px;
+      margin-bottom:20px;
+      line-height:1.8;
+    }
+
+    .quickfund{
+      display:flex;
+      gap:10px;
+    }
+
+    .quickfund button{
+      flex:1;
+    }
+
+    #history{
+      background:#0f172a;
+      padding:15px;
+      border-radius:12px;
+      margin-top:20px;
+      max-height:300px;
+      overflow:auto;
+    }
+
+    .txrow{
+      border-bottom:1px solid #1e293b;
+      padding:10px 0;
+      font-size:13px;
+    }
+
+    #msg{
+      margin-top:15px;
+      color:#facc15;
+      text-align:center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="panel">
+
+  <h2>🏦 CLEO INTERNAL BANKING CONSOLE</h2>
+
+  <button class="blue" onclick="listUsers()">Load All Clients</button>
+
+  <div id="userslist">No clients loaded.</div>
+
+  <div class="clientbox" id="clientinfo">
+    No client selected.
+  </div>
+
+  <input id="refcode" placeholder="Selected Reference Code">
+  <input id="amount" type="number" placeholder="Custom Amount">
+
+  <select id="status">
+    <option>Completed</option>
+    <option>Pending</option>
+  </select>
+
+  <select id="txtype">
+    <option>Incoming Deposit</option>
+    <option>Wire Transfer</option>
+    <option>Bonus Credit</option>
+    <option>Withdrawal Reversal</option>
+  </select>
+
+  <div class="quickfund">
+    <button class="gray" onclick="quickAdd(500)">+500</button>
+    <button class="gray" onclick="quickAdd(1000)">+1000</button>
+    <button class="gray" onclick="quickAdd(5000)">+5000</button>
+  </div>
+
+  <button class="green" onclick="injectMoney()">Inject Funds</button>
+
+  <div id="msg"></div>
+
+  <div id="history">No transaction history.</div>
+
+</div>
+<script>
+const supabaseClient = window.supabase.createClient(
+  "https://uzzqibmydlcpqfyceuup.supabase.co",
+  "sb_publishable_WXxeH7xCf4aISY6rRr1RBQ_KEcM5lRe"
+);
+
+let selectedUserId = null;
+
+async function listUsers() {
+  const { data:users, error } = await supabaseClient
+    .from('users')
+    .select('*');
+
+  const box = document.getElementById("userslist");
+
+  if(error){
+    box.innerHTML = "Error loading clients";
+    return;
+  }
+
+  if(!users || users.length===0){
+    box.innerHTML = "No registered clients";
+    return;
+  }
+
+  box.innerHTML = "";
+
+  users.forEach(u => {
+    box.innerHTML += `
+      <div class="userrow" onclick="selectUser('${u.id}','${u.reference_code}','${u.email || ''}')">
+        <b>${u.email || 'No Email'}</b><br>
+        Ref: ${u.reference_code}
+      </div>
+    `;
+  });
+}
+
+async function selectUser(id, ref, email){
+  selectedUserId = id;
+  document.getElementById("refcode").value = ref;
+
+  const { data:balInfo } = await supabaseClient
+    .from('balances')
+    .select('*')
+    .eq('user_id', id)
+    .single();
+
+  const { data:txs } = await supabaseClient
+    .from('transactions')
+    .select('*')
+    .eq('user_id', id)
+    .order('created_at', { ascending:false });
+
+  const balance = balInfo ? balInfo.balance : 0;
+  const totalTx = txs ? txs.length : 0;
+  const lastTx = txs && txs.length>0 ? txs[0].type + " / $" + txs[0].amount : "No activity";
+
+  document.getElementById("clientinfo").innerHTML = `
+    <b>Selected Client:</b> ${email}<br>
+    <b>Reference:</b> ${ref}<br>
+    <b>Current Balance:</b> $${balance}<br>
+    <b>Total Transactions:</b> ${totalTx}<br>
+    <b>Last Activity:</b> ${lastTx}
+  `;
+
+  const history = document.getElementById("history");
+  history.innerHTML = "";
+
+  if(txs && txs.length>0){
+    txs.forEach(tx => {
+      history.innerHTML += `
+        <div class="txrow">
+          ${tx.type} — $${tx.amount} — ${tx.status}<br>
+          <small>${tx.created_at}</small>
+        </div>
+      `;
+    });
+  } else {
+    history.innerHTML = "No transaction history.";
+  }
+}
+
+function quickAdd(val){
+  document.getElementById("amount").value = val;
+}
+
+async function injectMoney() {
+  if(!selectedUserId){
+    document.getElementById("msg").innerText = "Select a client first.";
+    return;
+  }
+
+  const amount = parseFloat(document.getElementById("amount").value);
+  const status = document.getElementById("status").value;
+  const txtype = document.getElementById("txtype").value;
+
+  const { data:balInfo } = await supabaseClient
+    .from('balances')
+    .select('*')
+    .eq('user_id', selectedUserId)
+    .single();
+
+  const currentBalance = balInfo ? Number(balInfo.balance) : 0;
+  const newBalance = currentBalance + amount;
+
+  await supabaseClient
+    .from('balances')
+    .upsert({
+      user_id:selectedUserId,
+      balance:newBalance
+    });
+
+  await supabaseClient
+    .from('transactions')
+    .insert({
+      user_id:selectedUserId,
+      amount:amount,
+      type:txtype,
+      status:status
+    });
+
+  document.getElementById("msg").innerText = "$" + amount + " injected successfully.";
+
+  const ref = document.getElementById("refcode").value;
+  const emailLine = document.getElementById("clientinfo").innerText.split("\n")[0];
+
+  selectUser(selectedUserId, ref, emailLine.replace("Selected Client: ",""));
+}
+</script>
+
+</body>
+</html>
