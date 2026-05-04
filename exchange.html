@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cleo Exchange</title>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="wallet.css">
+</head>
+
+<body>
+
+<div class="phone">
+<div class="notch"></div>
+
+<div class="screen">
+
+  <div class="topbar">
+    <div class="circleIcon" onclick="window.location.href='wallet.html'">←</div>
+    <div class="brand">EXCHANGE</div>
+    <div class="circleIcon">⇄</div>
+  </div>
+
+  <div class="subtitle">Multicurrency transfer</div>
+  <div class="username">Add or Exchange</div>
+
+  <div class="actions">
+    <div class="cardbtn" onclick="showAddSection()">
+      <div class="icon">＋</div>
+      Add Funds
+    </div>
+
+    <div class="cardbtn" onclick="showExchangeSection()">
+      <div class="icon">⇄</div>
+      Exchange
+    </div>
+  </div>
+
+  <div id="dynamicArea" style="margin-top:24px;"></div>
+
+</div>
+
+<div class="footerNav">
+  <div class="navItem" onclick="window.location.href='wallet.html'">⌂<br>Home</div>
+  <div class="navItem" onclick="window.location.href='cards.html'">▣<br>Cards</div>
+  <div class="navItem">⇄<br>Exchange</div>
+  <div class="navItem" onclick="window.location.href='invest.html'">◌<br>Invest</div>
+  <div class="navItem" onclick="window.location.href='saving.html'">◎<br>Saving</div>
+</div>
+
+<div id="msg"></div>
+</div>
+
+<script src="exchange.js"></script>
+</body>
+</html>
