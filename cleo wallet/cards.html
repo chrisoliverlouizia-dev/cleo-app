@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cleo Cards</title>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="wallet.css">
+</head>
+
+<body>
+
+<div class="phone">
+<div class="notch"></div>
+
+<div class="screen">
+
+  <div class="topbar">
+    <div class="circleIcon" onclick="window.location.href='wallet.html'">←</div>
+    <div class="brand">CARDS</div>
+    <div class="circleIcon">💳</div>
+  </div>
+
+  <div class="subtitle">Your premium payment methods</div>
+  <div class="username">Virtual & Physical Cards</div>
+
+  <div id="cardsArea" style="margin-top:24px;"></div>
+
+</div>
+
+<div class="footerNav">
+  <div class="navItem" onclick="window.location.href='wallet.html'">⌂<br>Home</div>
+  <div class="navItem">▣<br>Cards</div>
+  <div class="navItem" onclick="window.location.href='exchange.html'">⇄<br>Exchange</div>
+  <div class="navItem" onclick="window.location.href='invest.html'">◌<br>Invest</div>
+  <div class="navItem" onclick="window.location.href='saving.html'">◎<br>Saving</div>
+</div>
+
+<div id="msg"></div>
+</div>
+
+<script src="cards.js"></script>
+</body>
+</html>

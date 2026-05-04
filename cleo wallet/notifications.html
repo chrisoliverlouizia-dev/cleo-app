@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cleo Notifications</title>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="wallet.css">
+</head>
+
+<body>
+
+<div class="phone">
+<div class="notch"></div>
+
+<div class="screen">
+
+  <div class="topbar">
+    <div class="circleIcon" onclick="window.location.href='wallet.html'">←</div>
+    <div class="brand">ALERTS</div>
+    <div class="circleIcon">🔔</div>
+  </div>
+
+  <div class="subtitle">Account Activity Center</div>
+  <div class="username">Notifications</div>
+
+  <div id="notifArea" style="margin-top:24px;"></div>
+
+</div>
+
+<div id="msg"></div>
+</div>
+
+<script src="notifications.js"></script>
+</body>
+</html>

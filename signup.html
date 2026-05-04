@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html>
 <head>
@@ -181,4 +182,189 @@ setTimeout(async ()=>{
 </script>
 
 </body>
+=======
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cleo Sign Up</title>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <style>
+    *{
+      box-sizing:border-box;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    }
+    body{
+      margin:0;
+      background:#eef2f7;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      min-height:100vh;
+    }
+    .phone{
+      width:390px;
+      height:844px;
+      background:white;
+      border-radius:42px;
+      box-shadow:0 20px 60px rgba(0,0,0,0.18);
+      overflow:hidden;
+      position:relative;
+      border:8px solid #111827;
+    }
+    .notch{
+      width:160px;
+      height:26px;
+      background:#111827;
+      border-radius:0 0 18px 18px;
+      position:absolute;
+      top:0;
+      left:50%;
+      transform:translateX(-50%);
+      z-index:20;
+    }
+    .screen{
+      padding:35px 28px 35px 28px;
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+    .logo{
+      font-size:30px;
+      font-weight:700;
+      color:#111827;
+      text-align:center;
+      margin-top:90px;
+    }
+    .subtitle{
+      text-align:center;
+      color:#6b7280;
+      margin-top:10px;
+      font-size:14px;
+      margin-bottom:45px;
+    }
+    input{
+      width:100%;
+      padding:16px;
+      border-radius:18px;
+      border:1px solid #e5e7eb;
+      background:#f8fafc;
+      margin-bottom:12px;
+      font-size:15px;
+    }
+    button{
+      width:100%;
+      padding:16px;
+      border:none;
+      border-radius:18px;
+      background:#111827;
+      color:white;
+      font-weight:600;
+      cursor:pointer;
+      margin-top:12px;
+    }
+    .link{
+      margin-top:auto;
+      padding-bottom:10px;
+      text-align:center;
+      color:#2563eb;
+      cursor:pointer;
+      font-size:14px;
+    }
+    #msg{
+      margin-top:16px;
+      text-align:center;
+      color:#dc2626;
+      font-size:13px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="phone">
+<div class="notch"></div>
+
+<div class="screen">
+
+<div class="logo">CLEO</div>
+<div class="subtitle">Create your financial account</div>
+
+<input id="fullname" placeholder="Full Name">
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
+
+<button onclick="signup()">Create Account</button>
+
+<div id="msg"></div>
+
+<div class="link" onclick="window.location.replace('/')">
+Already have an account? Sign in
+</div>
+
+<script>
+const supabaseClient = window.supabase.createClient(
+ "https://uzzqibmydlcpqfyceuup.supabase.co",
+ "sb_publishable_WXxeH7xCf4aISY6rRr1RBQ_KEcM5lRe"
+);
+
+function generateRef(){
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let rand = "";
+  for(let i=0;i<4;i++){
+    rand += chars.charAt(Math.floor(Math.random()*chars.length));
+  }
+  return "LIV-" + String(Math.floor(Math.random()*9000)+1000) + "-" + rand;
+}
+
+function generateCleo(){
+  return "CLEO-" + Math.floor(Math.random()*90000000+10000000);
+}
+
+async function signup(){
+  const full = document.getElementById("fullname").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  const { data, error } = await supabaseClient.auth.signUp({
+    email,
+    password
+  });
+
+  if(error){
+    document.getElementById("msg").innerText = "SIGNUP ERROR: " + error.message;
+    return;
+  }
+
+  const uid = data.user.id;
+  const ref = generateRef();
+  const cleo = generateCleo();
+
+  await supabaseClient.from('users').insert({
+    id: uid,
+    full_name: full,
+    email: email,
+    reference_code: ref,
+    cleo_account: cleo
+  });
+
+  await supabaseClient.from('balances').insert({
+    user_id: uid,
+    balance: 0
+  });
+
+  document.getElementById("msg").style.color = "green";
+document.getElementById("msg").innerText = "Account created successfully. Redirecting...";
+
+setTimeout(async ()=>{
+  await supabaseClient.auth.signOut();
+  window.location.replace("/");
+},1500);
+  setTimeout(()=>{
+    window.location.href="index.html";
+  },1200);
+}
+</script>
+
+</body>
+>>>>>>> a4fb65ddd8ae5ad793ee0695b71991371a438e91
 </html>

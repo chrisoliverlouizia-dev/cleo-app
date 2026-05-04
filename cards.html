@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -132,4 +133,140 @@ body{
 
 <script src="cards.js"></script>
 </body>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Cleo Cards</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+body{
+ margin:0;
+ font-family:Arial,Helvetica,sans-serif;
+ background:#f4f6f8;
+ color:#111827;
+}
+.wrap{
+ max-width:420px;
+ margin:auto;
+ padding:20px;
+}
+.mainCard{
+ background:linear-gradient(135deg,#111827,#374151);
+ color:white;
+ border-radius:24px;
+ padding:28px;
+ box-shadow:0 20px 40px rgba(0,0,0,.18);
+}
+.mainMini{
+ font-size:12px;
+ opacity:.8;
+ letter-spacing:1px;
+}
+.balance{
+ font-size:30px;
+ font-weight:700;
+ margin-top:10px;
+}
+.ref{
+ font-size:13px;
+ opacity:.8;
+ margin-top:8px;
+}
+.actions{
+ display:flex;
+ gap:10px;
+ margin-top:14px;
+}
+.cardbtn{
+ flex:1;
+ background:white;
+ border-radius:16px;
+ padding:14px;
+ text-align:center;
+ font-size:13px;
+ font-weight:600;
+ box-shadow:0 4px 15px rgba(0,0,0,.06);
+ cursor:pointer;
+ border:1px solid #edf0f3;
+}
+.tx{
+ background:white;
+ border-radius:16px;
+ padding:15px;
+ margin-top:12px;
+ box-shadow:0 4px 15px rgba(0,0,0,.05);
+}
+#msg{
+ margin-top:18px;
+ text-align:center;
+ font-size:13px;
+ color:#111827;
+}
+#modalWrap{
+ position:fixed;
+ inset:0;
+ background:rgba(0,0,0,.45);
+ display:none;
+ justify-content:center;
+ align-items:center;
+ z-index:999;
+}
+#modalBox{
+ background:white;
+ width:86%;
+ max-width:360px;
+ border-radius:22px;
+ padding:22px;
+ box-shadow:0 20px 40px rgba(0,0,0,.2);
+}
+.modalTitle{
+ font-size:18px;
+ font-weight:700;
+ margin-bottom:15px;
+}
+.modalInput{
+ width:100%;
+ padding:14px;
+ margin-bottom:12px;
+ border-radius:14px;
+ border:1px solid #d1d5db;
+ box-sizing:border-box;
+}
+.modalBtn{
+ width:100%;
+ padding:14px;
+ border:none;
+ border-radius:14px;
+ background:#111827;
+ color:white;
+ font-weight:700;
+ cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<div class="actions">
+   <div class="cardbtn" onclick="goHome()">Home</div>
+   <div class="cardbtn" onclick="goProfile()">Profile</div>
+</div>
+   <div id="cardsArea"></div>
+
+   <div id="msg"></div>
+
+</div>
+
+<div id="modalWrap">
+   <div id="modalBox"></div>
+</div>
+
+<script src="cards.js"></script>
+</body>
+>>>>>>> a4fb65ddd8ae5ad793ee0695b71991371a438e91
 </html>

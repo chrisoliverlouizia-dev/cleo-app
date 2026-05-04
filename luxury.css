@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 body{
  margin:0;
  font-family:Arial,Helvetica,sans-serif;
@@ -161,4 +162,169 @@ button,
  font-size:16px;
  font-weight:700;
  color:white;
+=======
+body{
+ margin:0;
+ font-family:Arial,Helvetica,sans-serif;
+ background:linear-gradient(160deg,#0b0f19,#111827,#1f2937);
+ min-height:100vh;
+ color:white;
+}
+
+.wrap{
+ max-width:420px;
+ margin:auto;
+ padding:20px;
+}
+
+.mainCard{
+ background:rgba(255,255,255,0.05);
+ border:1px solid rgba(255,255,255,0.08);
+ color:white;
+ border-radius:26px;
+ padding:28px;
+ box-shadow:0 25px 60px rgba(0,0,0,0.35);
+ margin-bottom:16px;
+}
+
+.mainMini{
+ font-size:12px;
+ opacity:0.65;
+ letter-spacing:1.2px;
+ text-transform:uppercase;
+}
+
+.balance{
+ font-size:34px;
+ font-weight:700;
+ margin-top:10px;
+}
+
+.ref{
+ font-size:13px;
+ opacity:0.72;
+ margin-top:8px;
+}
+
+.actions{
+ display:flex;
+ gap:10px;
+ margin-top:14px;
+ margin-bottom:14px;
+}
+
+.cardbtn{
+ flex:1;
+ background:rgba(255,255,255,0.06);
+ border:1px solid rgba(255,255,255,0.08);
+ color:white;
+ border-radius:16px;
+ padding:14px;
+ text-align:center;
+ font-size:13px;
+ font-weight:600;
+ cursor:pointer;
+ box-shadow:0 8px 20px rgba(0,0,0,0.15);
+ transition:0.2s;
+}
+
+.cardbtn:hover{
+ transform:translateY(-2px);
+ background:rgba(255,255,255,0.09);
+}
+
+.tx{
+ background:rgba(255,255,255,0.05);
+ border:1px solid rgba(255,255,255,0.06);
+ color:white;
+ border-radius:18px;
+ padding:15px;
+ margin-top:12px;
+ box-shadow:0 8px 20px rgba(0,0,0,0.18);
+}
+
+input{
+ width:100%;
+ padding:15px;
+ margin-bottom:12px;
+ border:none;
+ border-radius:14px;
+ background:rgba(255,255,255,0.08);
+ color:white;
+ outline:none;
+ box-sizing:border-box;
+}
+
+button,
+.modalBtn{
+ width:100%;
+ padding:15px;
+ border:none;
+ border-radius:14px;
+ background:white;
+ color:#111827;
+ font-size:14px;
+ font-weight:700;
+ cursor:pointer;
+}
+
+#msg{
+ margin-top:18px;
+ text-align:center;
+ font-size:13px;
+ color:#d1d5db;
+}
+
+.amtpos{
+ color:#4ade80;
+ font-weight:700;
+}
+
+.amtneg{
+ color:#f87171;
+ font-weight:700;
+}
+
+.tiny{
+ font-size:12px;
+ color:#9ca3af;
+}
+
+#modalWrap{
+ position:fixed;
+ top:0;
+ left:0;
+ width:100%;
+ height:100%;
+ background:rgba(0,0,0,0.55);
+ display:none;
+ justify-content:center;
+ align-items:center;
+ z-index:999;
+}
+
+#modalBox{
+ background:#111827;
+ border:1px solid rgba(255,255,255,0.08);
+ width:86%;
+ max-width:360px;
+ border-radius:24px;
+ padding:22px;
+ box-shadow:0 25px 60px rgba(0,0,0,0.45);
+ color:white;
+}
+
+.modalTitle{
+ font-size:18px;
+ font-weight:700;
+ margin-bottom:15px;
+}
+
+.sectionTitle{
+ margin-top:24px;
+ margin-bottom:14px;
+ font-size:16px;
+ font-weight:700;
+ color:white;
+>>>>>>> a4fb65ddd8ae5ad793ee0695b71991371a438e91
 }
