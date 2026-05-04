@@ -3,67 +3,140 @@ const supabaseClient = window.supabase.createClient(
  "sb_publishable_WXxeH7xCf4aISY6rRr1RBQ_KEcM5lRe"
 );
 
-let fullName = "Client";
-
-async function loadCardsUser(){
+async function checkAuth(){
  const { data:{ user } } = await supabaseClient.auth.getUser();
 
- const { data:userData } = await supabaseClient
-   .from('users')
-   .select('*')
-   .eq('id', user.id)
-   .single();
+ if(!user){
+   window.location.href = "login.html";
+   return null;
+ }
 
- fullName = userData.full_name || "Client";
+ return user;
+}
 
+function openModal(html){
+ document.getElementById("modalBox").innerHTML = html;
+ document.getElementById("modalWrap").style.display = "flex";
+}
+
+function closeModal(){
+ document.getElementById("modalWrap").style.display = "none";
+}
+
+document.addEventListener("click", function(e){
+ if(e.target.id === "modalWrap"){
+   closeModal();
+ }
+});
+
+let currentUser;
+let cardFrozen = false;
+
+async function loadCardsUser(){
+ const user = await checkAuth();
+ if(!user) return;
+
+ currentUser = user;
  renderCards();
 }
 
 function renderCards(){
  document.getElementById("cardsArea").innerHTML = `
-
-   <div style="
-   background:linear-gradient(135deg,#0f172a,#1e293b);
-   color:white;
-   border-radius:28px;
-   padding:24px;
-   box-shadow:0 14px 30px rgba(0,0,0,.18);
-   margin-bottom:18px;">
-      <div style="font-size:12px;opacity:.7;">CLEO VIRTUAL CARD</div>
-      <div style="margin-top:28px;font-size:20px;letter-spacing:3px;">4582 •••• •••• 1904</div>
-      <div style="margin-top:18px;font-size:13px;">${fullName.toUpperCase()}</div>
-      <div style="margin-top:8px;font-size:12px;opacity:.7;">Exp 12/30</div>
+   <div class="mainCard">
+      <div class="mainMini">CLEO PREMIUM CARD</div>
+      <div class="balance" style="font-size:24px;">•••• 4582</div>
+      <div class="ref">${cardFrozen ? 'Temporarily Frozen' : 'Virtual & Physical Linked'}</div>
    </div>
 
-   <div style="
-   background:linear-gradient(135deg,#d6d3d1,#78716c);
-   color:white;
-   border-radius:28px;
-   padding:24px;
-   box-shadow:0 14px 30px rgba(0,0,0,.14);
-   margin-bottom:22px;">
-      <div style="font-size:12px;opacity:.8;">CLEO METAL CARD</div>
-      <div style="margin-top:28px;font-size:20px;letter-spacing:3px;">5318 •••• •••• 8821</div>
-      <div style="margin-top:18px;font-size:13px;">${fullName.toUpperCase()}</div>
-      <div style="margin-top:8px;font-size:12px;opacity:.8;">Exp 10/31</div>
+   <div class="tx">
+      <b>Virtual Card</b><br>
+      Online secure payments enabled
    </div>
 
-   <div class="cardbtn" onclick="showCardNumber()">Reveal Card Details</div>
-   <div class="cardbtn" onclick="freezeCard()" style="margin-top:12px;">Freeze / Unfreeze Card</div>
-   <div class="cardbtn" onclick="cardSettings()" style="margin-top:12px;">Card Settings</div>
+   <div class="tx">
+      <b>Physical Card</b><br>
+      Contactless premium spending active
+   </div>
+
+   <div class="actions" style="margin-top:22px;">
+      <div class="cardbtn" onclick="simulatePurchase()">Card Purchase</div>
+      <div class="cardbtn" onclick="freezeCard()">${cardFrozen ? 'Unfreeze Card' : 'Freeze Card'}</div>
+   </div>
+
+   <div class="cardbtn" onclick="showDetails()" style="margin-top:12px;">
+      Card Details
+   </div>
  `;
 }
 
-function showCardNumber(){
- document.getElementById("msg").innerText = "Virtual Card: 4582 7744 9911 1904 | CVV 482";
+function simulatePurchase(){
+ if(cardFrozen){
+   document.getElementById("msg").innerText = "Card is frozen.";
+   return;
+ }
+
+ openModal(`
+   <div class="modalTitle">Premium Card Purchase</div>
+   <input id="merchantName" class="modalInput" placeholder="Merchant Name">
+   <input id="purchaseAmount" class="modalInput" placeholder="Purchase Amount">
+   <button class="modalBtn" onclick="confirmPurchase()">Approve Payment</button>
+ `);
+}
+
+async function confirmPurchase(){
+ let merchant = document.getElementById("merchantName").value;
+ let amount = document.getElementById("purchaseAmount").value;
+
+ if(!merchant || !amount) return;
+ amount = Number(amount);
+
+ let { data:bal } = await supabaseClient
+   .from('balances')
+   .select('*')
+   .eq('user_id', currentUser.id)
+   .single();
+
+ if(Number(bal.balance) < amount){
+   document.getElementById("msg").innerText = "Insufficient wallet balance.";
+   closeModal();
+   return;
+ }
+
+ let newBal = Number(bal.balance) - amount;
+
+ await supabaseClient
+   .from('balances')
+   .update({ balance:newBal })
+   .eq('user_id', currentUser.id);
+
+ await supabaseClient.from('transactions').insert({
+   user_id:currentUser.id,
+   type:"Card Payment",
+   amount:-amount,
+   note:"Purchase at "+merchant
+ });
+
+ closeModal();
+ document.getElementById("msg").innerText = "Card purchase approved.";
 }
 
 function freezeCard(){
- document.getElementById("msg").innerText = "Card status updated successfully.";
+ cardFrozen = !cardFrozen;
+ document.getElementById("msg").innerText = cardFrozen ? "Card temporarily frozen." : "Card active again.";
+ renderCards();
 }
 
-function cardSettings(){
- document.getElementById("msg").innerText = "Card controls opened.";
+function showDetails(){
+ openModal(`
+   <div class="modalTitle">Card Details</div>
+   <div class="tx">
+      Card Holder: CLEO CLIENT<br>
+      Number: •••• •••• •••• 4582<br>
+      Exp: 09/30<br>
+      CVV: •••
+   </div>
+   <button class="modalBtn" onclick="closeModal()">Close</button>
+ `);
 }
 
 loadCardsUser();

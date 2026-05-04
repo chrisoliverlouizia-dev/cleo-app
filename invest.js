@@ -3,31 +3,78 @@ const supabaseClient = window.supabase.createClient(
  "sb_publishable_WXxeH7xCf4aISY6rRr1RBQ_KEcM5lRe"
 );
 
+async function checkAuth(){
+ const { data:{ user } } = await supabaseClient.auth.getUser();
+
+ if(!user){
+   window.location.href = "login.html";
+   return null;
+ }
+
+ return user;
+}
+
+function openModal(html){
+ document.getElementById("modalBox").innerHTML = html;
+ document.getElementById("modalWrap").style.display = "flex";
+}
+
+function closeModal(){
+ document.getElementById("modalWrap").style.display = "none";
+}
+
+document.addEventListener("click", function(e){
+ if(e.target.id === "modalWrap"){
+   closeModal();
+ }
+});
+
 let currentUser;
 
 async function loadInvestUser(){
- const { data:{ user } } = await supabaseClient.auth.getUser();
+ const user = await checkAuth();
+ if(!user) return;
+
  currentUser = user;
  renderInvest();
 }
 
-function renderInvest(){
- document.getElementById("investArea").innerHTML = `
+async function renderInvest(){
+ const { data:positions } = await supabaseClient
+   .from('investments')
+   .select('*')
+   .eq('user_id', currentUser.id);
 
+ let totalPortfolio = 0;
+ let htmlPositions = "";
+
+ if(positions && positions.length){
+   positions.forEach(p=>{
+     totalPortfolio += Number(p.amount);
+
+     htmlPositions += `
+       <div class="tx">
+          <b>${p.stock}</b><br>
+          Invested: $${Number(p.amount).toFixed(2)}
+       </div>
+     `;
+   });
+ }else{
+   htmlPositions = `<div class="tiny">No stock positions yet.</div>`;
+ }
+
+ document.getElementById("investArea").innerHTML = `
    <div class="mainCard">
       <div class="mainMini">TOTAL PORTFOLIO VALUE</div>
-      <div class="balance">$12,840.55</div>
-      <div class="ref" style="color:#86efac;">+4.82% this month</div>
+      <div class="balance">$${totalPortfolio.toFixed(2)}</div>
+      <div class="ref">${positions ? positions.length : 0} Open Positions</div>
    </div>
 
-   <div style="margin-top:22px;font-size:16px;font-weight:700;color:#111827;">
-      Market Movers
+   <div style="margin-top:20px;font-size:16px;font-weight:700;color:#111827;">
+      Portfolio Holdings
    </div>
 
-   <div class="tx"><b>AAPL</b> — Apple Inc.<br><span class="amtpos">+2.14%</span></div>
-   <div class="tx"><b>TSLA</b> — Tesla Inc.<br><span class="amtpos">+1.27%</span></div>
-   <div class="tx"><b>NVDA</b> — Nvidia Corp.<br><span class="amtneg">-0.84%</span></div>
-   <div class="tx"><b>AMZN</b> — Amazon.com<br><span class="amtpos">+3.02%</span></div>
+   ${htmlPositions}
 
    <div class="actions" style="margin-top:24px;">
       <div class="cardbtn" onclick="buyStock()">Buy Stock</div>
@@ -40,12 +87,20 @@ function renderInvest(){
  `;
 }
 
-async function buyStock(){
- let stock = prompt("Enter stock symbol (AAPL/TSLA/NVDA/AMZN):");
- if(!stock) return;
+function buyStock(){
+ openModal(`
+   <div class="modalTitle">Buy Stock Order</div>
+   <input id="stockSymbol" class="modalInput" placeholder="Ticker Symbol (AAPL)">
+   <input id="stockAmount" class="modalInput" placeholder="Investment Amount">
+   <button class="modalBtn" onclick="confirmBuyStock()">Execute Purchase</button>
+ `);
+}
 
- let amount = prompt("Enter investment amount:");
- if(!amount) return;
+async function confirmBuyStock(){
+ let stock = document.getElementById("stockSymbol").value;
+ let amount = document.getElementById("stockAmount").value;
+
+ if(!stock || !amount) return;
  amount = Number(amount);
 
  let { data:bal } = await supabaseClient
@@ -56,6 +111,7 @@ async function buyStock(){
 
  if(Number(bal.balance) < amount){
    document.getElementById("msg").innerText = "Insufficient wallet balance.";
+   closeModal();
    return;
  }
 
@@ -79,15 +135,25 @@ async function buyStock(){
    note:"Investment order executed"
  });
 
+ closeModal();
  document.getElementById("msg").innerText = stock.toUpperCase()+" purchase completed.";
+ renderInvest();
 }
 
-async function sellStock(){
- let stock = prompt("Enter stock symbol to sell:");
- if(!stock) return;
+function sellStock(){
+ openModal(`
+   <div class="modalTitle">Sell Stock Order</div>
+   <input id="sellSymbol" class="modalInput" placeholder="Ticker Symbol">
+   <input id="sellAmount" class="modalInput" placeholder="Sell Amount">
+   <button class="modalBtn" onclick="confirmSellStock()">Execute Sale</button>
+ `);
+}
 
- let amount = prompt("Enter sell amount:");
- if(!amount) return;
+async function confirmSellStock(){
+ let stock = document.getElementById("sellSymbol").value;
+ let amount = document.getElementById("sellAmount").value;
+
+ if(!stock || !amount) return;
  amount = Number(amount);
 
  let { data:bal } = await supabaseClient
@@ -110,11 +176,13 @@ async function sellStock(){
    note:"Investment sell order executed"
  });
 
+ closeModal();
  document.getElementById("msg").innerText = stock.toUpperCase()+" sale completed.";
+ renderInvest();
 }
 
 function watchlist(){
- document.getElementById("msg").innerText = "Watchlist opened.";
+ document.getElementById("msg").innerText = "Live watchlist opened.";
 }
 
 loadInvestUser();

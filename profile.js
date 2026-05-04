@@ -3,72 +3,103 @@ const supabaseClient = window.supabase.createClient(
  "sb_publishable_WXxeH7xCf4aISY6rRr1RBQ_KEcM5lRe"
 );
 
-let fullName="", cleoAcc="", userEmail="", refCode="";
-
-async function loadProfileUser(){
+async function checkAuth(){
  const { data:{ user } } = await supabaseClient.auth.getUser();
 
- userEmail = user.email || "";
+ if(!user){
+   window.location.href = "login.html";
+   return null;
+ }
 
- const { data:userData } = await supabaseClient
+ return user;
+}
+
+function openModal(html){
+ document.getElementById("modalBox").innerHTML = html;
+ document.getElementById("modalWrap").style.display = "flex";
+}
+
+function closeModal(){
+ document.getElementById("modalWrap").style.display = "none";
+}
+
+document.addEventListener("click", function(e){
+ if(e.target.id === "modalWrap"){
+   closeModal();
+ }
+});
+
+let currentUser;
+
+async function loadProfileUser(){
+ const user = await checkAuth();
+ if(!user) return;
+
+ currentUser = user;
+
+ const { data:u } = await supabaseClient
    .from('users')
    .select('*')
    .eq('id', user.id)
    .single();
 
- fullName = userData.full_name || "Client";
- cleoAcc = userData.cleo_account || "CLEO-00000000";
- refCode = userData.reference_code || "LIV-0000-XXXX";
-
- renderProfile();
+ renderProfile(u);
 }
 
-function renderProfile(){
+function renderProfile(u){
  document.getElementById("profileArea").innerHTML = `
-
    <div class="mainCard">
-      <div class="mainMini">CLIENT IDENTITY</div>
-      <div class="balance" style="font-size:22px;">${fullName}</div>
-      <div class="ref">${userEmail}</div>
+      <div class="mainMini">CLIENT PROFILE</div>
+      <div class="balance" style="font-size:22px;">${u?.full_name || 'Client'}</div>
+      <div class="ref">${u?.cleo_account || 'CLEO-00000000'}</div>
    </div>
 
-   <div class="tx">
-      <b>Cleo Account</b><br>
-      ${cleoAcc}
-   </div>
+   <div class="tx"><b>Email</b><br>${currentUser.email}</div>
+   <div class="tx"><b>Reference Code</b><br>${u?.reference_code || 'LIV-0000-XXXX'}</div>
+   <div class="tx"><b>Membership</b><br>Cleo Premium Black</div>
 
-   <div class="tx">
-      <b>LIV Reference</b><br>
-      ${refCode}
+   <div class="actions" style="margin-top:22px;">
+      <div class="cardbtn" onclick="editName()">Edit Name</div>
+      <div class="cardbtn" onclick="showLogout()">Disconnect</div>
    </div>
-
-   <div class="tx">
-      <b>Personal Information</b><br>
-      KYC verified • Address on file • Identity confirmed
-   </div>
-
-   <div class="tx">
-      <b>Security Settings</b><br>
-      Password enabled • Device protected • 2FA optional
-   </div>
-
-   <div class="cardbtn" onclick="changePassword()">Change Password</div>
-   <div class="cardbtn" onclick="openPersonal()" style="margin-top:12px;">Manage Personal Info</div>
-   <div class="cardbtn" onclick="logoutUser()" style="margin-top:12px;">Logout</div>
  `;
 }
 
-function changePassword(){
- document.getElementById("msg").innerText = "Password center opened.";
+function editName(){
+ openModal(`
+   <div class="modalTitle">Edit Client Name</div>
+   <input id="newClientName" class="modalInput" placeholder="New Full Name">
+   <button class="modalBtn" onclick="confirmEditName()">Save Changes</button>
+ `);
 }
 
-function openPersonal(){
- document.getElementById("msg").innerText = "Personal information opened.";
+async function confirmEditName(){
+ let newName = document.getElementById("newClientName").value;
+ if(!newName) return;
+
+ await supabaseClient
+   .from('users')
+   .update({ full_name:newName })
+   .eq('id', currentUser.id);
+
+ closeModal();
+ document.getElementById("msg").innerText = "Profile updated.";
+ loadProfileUser();
+}
+
+function showLogout(){
+ openModal(`
+   <div class="modalTitle">Secure Disconnect</div>
+   <div class="tx" style="margin-bottom:15px;">
+      Are you sure you want to sign out from this Cleo device?
+   </div>
+   <button class="modalBtn" onclick="logoutUser()">Yes, Disconnect</button>
+ `);
 }
 
 async function logoutUser(){
  await supabaseClient.auth.signOut();
- window.location.href="/";
+ window.location.href = "login.html";
 }
 
 loadProfileUser();

@@ -1,34 +1,82 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Cleo Notifications</title>
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="wallet.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Cleo Notifications</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+body{
+ margin:0;
+ font-family:Arial,Helvetica,sans-serif;
+ background:#f4f6f8;
+ color:#111827;
+}
+.wrap{
+ max-width:420px;
+ margin:auto;
+ padding:20px;
+}
+.mainCard{
+ background:linear-gradient(135deg,#111827,#374151);
+ color:white;
+ border-radius:24px;
+ padding:28px;
+ box-shadow:0 20px 40px rgba(0,0,0,.18);
+}
+.mainMini{
+ font-size:12px;
+ opacity:.8;
+ letter-spacing:1px;
+}
+.balance{
+ font-size:28px;
+ font-weight:700;
+ margin-top:10px;
+}
+.ref{
+ font-size:13px;
+ opacity:.8;
+ margin-top:8px;
+}
+.tx{
+ background:white;
+ border-radius:16px;
+ padding:15px;
+ margin-top:12px;
+ box-shadow:0 4px 15px rgba(0,0,0,.05);
+}
+.amtpos{
+ color:green;
+ font-weight:700;
+}
+.amtneg{
+ color:red;
+ font-weight:700;
+}
+.tiny{
+ font-size:12px;
+ color:#6b7280;
+}
+</style>
 </head>
-
 <body>
-
-<div class="phone">
-<div class="notch"></div>
-
-<div class="screen">
-
-  <div class="topbar">
-    <div class="circleIcon" onclick="window.location.href='wallet.html'">←</div>
-    <div class="brand">ALERTS</div>
-    <div class="circleIcon">🔔</div>
-  </div>
-
-  <div class="subtitle">Account Activity Center</div>
-  <div class="username">Notifications</div>
-
-  <div id="notifArea" style="margin-top:24px;"></div>
-
+<div class="actions">
+   <div class="cardbtn" onclick="goHome()">Home</div>
+   <div class="cardbtn" onclick="goProfile()">Profile</div>
 </div>
+<div class="wrap">
 
-<div id="msg"></div>
+   <div id="notifArea"></div>
+
 </div>
 
 <script src="notifications.js"></script>
+<script>
+function goHome(){ window.location.href="index.html"; }
+function goProfile(){ window.location.href="profile.html"; }
+</script>
 </body>
 </html>

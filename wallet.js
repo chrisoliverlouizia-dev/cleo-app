@@ -3,6 +3,17 @@ const supabaseClient = window.supabase.createClient(
  "sb_publishable_WXxeH7xCf4aISY6rRr1RBQ_KEcM5lRe"
 );
 
+async function checkAuth(){
+ const { data:{ user } } = await supabaseClient.auth.getUser();
+
+ if(!user){
+   window.location.href = "login.html";
+   return null;
+ }
+
+ return user;
+}
+
 let currentUser, fullName, cleoAcc, refCode;
 
 async function goProfile(){ window.location.href="profile.html"; }
@@ -13,7 +24,9 @@ async function goInvest(){ window.location.href="invest.html"; }
 async function goSaving(){ window.location.href="saving.html"; }
 
 async function loadUser(){
- const { data:{ user } } = await supabaseClient.auth.getUser();
+ const user = await checkAuth();
+ if(!user) return;
+
  currentUser = user;
 
  const { data:userData } = await supabaseClient
@@ -22,9 +35,9 @@ async function loadUser(){
    .eq('id', user.id)
    .single();
 
- fullName = userData.full_name || "Client";
- cleoAcc = userData.cleo_account || "CLEO-00000000";
- refCode = userData.reference_code || "LIV-0000-XXXX";
+ fullName = userData?.full_name || "Client";
+ cleoAcc = userData?.cleo_account || "CLEO-00000000";
+ refCode = userData?.reference_code || "LIV-0000-XXXX";
 
  document.getElementById("welcomeName").innerText = fullName;
  document.getElementById("topRef").innerText = refCode;

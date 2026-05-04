@@ -1,61 +1,119 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Cleo Wallet</title>
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="wallet.css">
-</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Cleo Wallet</title>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="wallet.css">
+
+<style>
+body{
+ margin:0;
+ font-family:Arial,Helvetica,sans-serif;
+ background:#f4f6f8;
+ color:#111827;
+}
+.wrap{
+ max-width:420px;
+ margin:auto;
+ padding:20px;
+}
+.mainCard{
+ background:linear-gradient(135deg,#111827,#374151);
+ color:white;
+ border-radius:24px;
+ padding:28px;
+ box-shadow:0 20px 40px rgba(0,0,0,.18);
+}
+.mainMini{
+ font-size:12px;
+ letter-spacing:1px;
+ opacity:.8;
+}
+.balance{
+ font-size:38px;
+ font-weight:700;
+ margin-top:10px;
+}
+.ref{
+ font-size:13px;
+ opacity:.8;
+ margin-top:8px;
+}
+.actions{
+ display:flex;
+ gap:10px;
+ margin-top:20px;
+}
+.cardbtn{
+ flex:1;
+ background:white;
+ border-radius:16px;
+ padding:14px;
+ text-align:center;
+ font-size:13px;
+ font-weight:600;
+ box-shadow:0 4px 15px rgba(0,0,0,.06);
+ cursor:pointer;
+}
+.sectionTitle{
+ margin-top:28px;
+ margin-bottom:14px;
+ font-size:16px;
+ font-weight:700;
+}
+.tx{
+ background:white;
+ border-radius:16px;
+ padding:15px;
+ margin-bottom:12px;
+ box-shadow:0 4px 15px rgba(0,0,0,.05);
+}
+.amtpos{color:green;font-weight:700;}
+.amtneg{color:red;font-weight:700;}
+.tiny{
+ font-size:12px;
+ color:#6b7280;
+}
+#msg{
+ margin-top:18px;
+ text-align:center;
+ font-size:13px;
+ color:#111827;
+}
+</style>
+</head>
 <body>
 
-<div class="phone">
-<div class="notch"></div>
+<div class="wrap">
 
-<div class="screen">
+   <div class="mainCard">
+      <div class="mainMini">WELCOME BACK</div>
+      <div class="balance" id="bal">$0.00</div>
+      <div class="ref" id="welcomeName">Client</div>
+      <div class="ref" id="topRef">LIV-0000</div>
+   </div>
 
-  <div class="topbar">
-    <div class="circleIcon" onclick="goProfile()">👤</div>
-    <div class="brand">CLEO</div>
-    <div class="circleIcon" onclick="goNotif()">🔔</div>
-  </div>
+   <div class="actions">
+      <div class="cardbtn" onclick="goExchange()">Exchange</div>
+      <div class="cardbtn" onclick="goInvest()">Invest</div>
+      <div class="cardbtn" onclick="goSaving()">Saving</div>
+   </div>
 
-  <div class="subtitle">Welcome back,</div>
-  <div class="username" id="welcomeName">Client</div>
+   <div class="actions">
+      <div class="cardbtn" onclick="goCards()">Cards</div>
+      <div class="cardbtn" onclick="goProfile()">Profile</div>
+      <div class="cardbtn" onclick="goNotif()">Alerts</div>
+   </div>
 
-  <div class="mainCard">
-    <div class="mainMini">CLEO GLOBAL ACCOUNT</div>
-    <div class="balance" id="bal">$0.00</div>
-    <div class="ref" id="topRef">LIV-----</div>
-  </div>
+   <div class="sectionTitle">Recent Activity</div>
 
-  <div class="actions">
-    <div class="cardbtn" onclick="goExchange()">
-      <div class="icon">＋</div>
-      Add
-    </div>
+   <div id="history"></div>
 
-    <div class="cardbtn" onclick="goExchange()">
-      <div class="icon">⇄</div>
-      Exchange
-    </div>
-  </div>
+   <div id="msg"></div>
 
-  <div class="activity">
-    <h3>Recent Activity</h3>
-    <div id="history"></div>
-  </div>
-
-</div>
-
-<div class="footerNav">
-  <div class="navItem">⌂<br>Home</div>
-  <div class="navItem" onclick="goCards()">▣<br>Cards</div>
-  <div class="navItem" onclick="goExchange()">⇄<br>Exchange</div>
-  <div class="navItem" onclick="goInvest()">◌<br>Invest</div>
-  <div class="navItem" onclick="goSaving()">◎<br>Saving</div>
-</div>
-
-<div id="msg"></div>
 </div>
 
 <script src="wallet.js"></script>
